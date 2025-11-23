@@ -1,43 +1,126 @@
 <!DOCTYPE html>
-<html lang="zh-HK">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 工具整合平台</title>
+    <title>AI 工具中心</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #6366f1; /* Indigo-500 */
+        }
+    </style>
 </head>
-<body class="bg-slate-50 min-h-screen p-8 md:p-12 font-sans text-slate-800">
+<body class="text-slate-800 min-h-screen flex flex-col">
 
-    <div class="max-w-6xl mx-auto">
-        <div class="mb-12">
-            <h1 class="text-4xl font-bold text-slate-900 mb-2">AI Tools Hub</h1>
-            <p class="text-slate-500 text-lg">你的專屬工具箱：整合所有 AI 與實用小工具</p>
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-20">
+        <div class="max-w-6xl mx-auto px-6 py-5 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-indigo-600 text-white p-2 rounded-lg">
+                    <i class="ph-bold ph-squares-four text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-slate-900 tracking-wide">AI 工具中心</h1>
+                    <p class="text-xs text-slate-500 font-medium">個人專屬效率工作台</p>
+                </div>
+            </div>
+            <div class="text-sm text-slate-500 bg-slate-100 px-3 py-1 rounded-full flex items-center gap-2">
+                <i class="ph-fill ph-user-circle text-lg"></i>
+                <span>User</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-6xl mx-auto w-full p-6 md:p-8">
+        
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-slate-800 mb-2">歡迎回來 👋</h2>
+            <p class="text-slate-500">選擇你需要使用的工具：</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
-            <a href="diff-tool.html" class="block group">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-200 h-full">
-                    <div class="bg-blue-50 w-12 h-12 rounded-xl flex items-center justify-center text-blue-600 mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                        <i data-lucide="arrow-right-left"></i>
+
+            <a href="work-dashboard.html" class="block group">
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 card-hover h-full relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                        <i class="ph-fill ph-briefcase text-8xl text-indigo-600"></i>
                     </div>
-                    <h2 class="text-xl font-bold text-slate-900 mb-2">數據差異比對神器</h2>
-                    <p class="text-slate-500 text-sm leading-relaxed">
-                        快速比對兩組數據，找出新增、刪除與共同項 (A vs B)。
+                    
+                    <div class="flex items-center gap-4 mb-4 relative z-10">
+                        <div class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                            <i class="ph-duotone ph-briefcase"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-900">工作儀表板</h3>
+                            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full">New</span>
+                        </div>
+                    </div>
+                    
+                    <p class="text-slate-500 text-sm leading-relaxed mb-4 relative z-10">
+                        下班倒數計時器、每日備忘錄以及特別日子追蹤。掌控你的工作節奏。
                     </p>
-                    <div class="mt-4 flex items-center text-blue-600 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                        立即使用 &rarr;
+
+                    <div class="flex items-center text-indigo-600 text-sm font-bold mt-auto relative z-10 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
+                        開啟工具 <i class="ph-bold ph-arrow-right ml-1"></i>
                     </div>
                 </div>
             </a>
 
-            </div>
-    </div>
+            <a href="diff-tool.html" class="block group">
+                <div class="bg-white rounded-2xl p-6 border border-slate-200 card-hover h-full relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                        <i class="ph-fill ph-arrows-left-right text-8xl text-emerald-600"></i>
+                    </div>
 
-    <script>
-        // 初始化圖示
-        lucide.createIcons();
-    </script>
+                    <div class="flex items-center gap-4 mb-4 relative z-10">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                            <i class="ph-duotone ph-arrows-left-right"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg text-slate-900">數據比對神器</h3>
+                        </div>
+                    </div>
+                    
+                    <p class="text-slate-500 text-sm leading-relaxed mb-4 relative z-10">
+                        快速比對兩組數據 (A vs B)，精準找出新增、刪除與共同的項目。
+                    </p>
+
+                    <div class="flex items-center text-emerald-600 text-sm font-bold mt-auto relative z-10 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
+                        開啟工具 <i class="ph-bold ph-arrow-right ml-1"></i>
+                    </div>
+                </div>
+            </a>
+
+            <div class="block opacity-60">
+                <div class="bg-slate-50 rounded-2xl p-6 border border-dashed border-slate-300 h-full flex flex-col items-center justify-center text-center">
+                    <div class="w-12 h-12 rounded-xl bg-slate-200 text-slate-400 flex items-center justify-center text-2xl mb-4">
+                        <i class="ph-duotone ph-plus"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-400">新增工具</h3>
+                    <p class="text-slate-400 text-sm mt-2">
+                        未來可以在這裡<br>加入更多 AI 功能
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="text-center py-6 text-slate-400 text-sm">
+        &copy; 2025 AI Tools Hub.
+    </footer>
+
 </body>
 </html>
