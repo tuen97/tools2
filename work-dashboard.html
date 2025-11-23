@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工作</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .gradient-text {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Navbar / Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-10">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <i class="ph-fill ph-hourglass-high text-3xl text-indigo-600"></i>
+                <div>
+                    <h1 class="text-xl font-bold text-slate-900 tracking-wide">工作</h1>
+                    <p id="current-date-display" class="text-xs text-slate-500 font-medium">載入中...</p>
+                </div>
+            </div>
+            <div class="text-right hidden sm:block">
+                <div id="digital-clock" class="text-2xl font-mono font-bold text-slate-700">00:00:00</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-5xl mx-auto w-full p-4 md:p-6 space-y-6">
+
+        <!-- Grid Layout -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- Left Column: Work Countdown -->
+            <section class="space-y-6">
+                <!-- Work Timer Card -->
+                <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-100 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10">
+                        <i class="ph-fill ph-briefcase text-9xl text-indigo-600"></i>
+                    </div>
+
+                    <div class="flex justify-between items-start mb-6 relative z-10">
+                        <div>
+                            <h2 class="text-lg font-bold flex items-center gap-2 text-slate-800">
+                                <i class="ph-duotone ph-briefcase text-indigo-500"></i>
+                                下班倒數
+                            </h2>
+                            <p class="text-sm text-slate-400 mt-1">
+                                設定時間: <span id="work-time-range" class="font-mono text-slate-600">09:00 - 18:00</span>
+                            </p>
+                        </div>
+                        <button onclick="toggleSettingsModal()" class="text-slate-400 hover:text-indigo-600 transition-colors p-1 bg-slate-50 rounded-lg hover:bg-indigo-50">
+                            <i class="ph-bold ph-gear"></i>
+                        </button>
+                    </div>
+
+                    <div class="relative z-10">
+                        <!-- Progress Circle/Bar Hybrid -->
+                        <div class="mb-2 flex justify-between items-end">
+                            <span id="work-status-text" class="text-sm font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">工作中</span>
+                            <span id="work-percent-text" class="text-3xl font-bold text-slate-700">0%</span>
+                        </div>
+                        
+                        <div class="h-4 bg-slate-100 rounded-full overflow-hidden mb-6 border border-slate-200">
+                            <div id="work-progress-bar" class="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-1000 ease-out w-0"></div>
+                        </div>
+
+                        <div class="text-center bg-slate-50 rounded-xl p-4 border border-slate-100">
+                            <p class="text-xs text-slate-500 uppercase tracking-wider mb-1">距離下班還有</p>
+                            <div id="countdown-display" class="text-4xl md:text-5xl font-mono font-bold text-slate-800 tracking-tight">
+                                --:--:--
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Daily Memo -->
+                <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-100 h-64 flex flex-col">
+                    <h2 class="text-lg font-bold flex items-center gap-2 text-slate-800 mb-4">
+                        <i class="ph-duotone ph-note-pencil text-amber-500"></i>
+                        今日備忘
+                    </h2>
+                    <textarea id="daily-memo" 
+                        class="flex-1 w-full bg-amber-50 rounded-xl p-4 text-slate-700 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-200 resize-none border-0 text-sm leading-relaxed"
+                        placeholder="今天想記錄些什麼？例如：&#10;1. 完成報告&#10;2. 買晚餐..."></textarea>
+                </div>
+            </section>
+
+            <!-- Right Column: Special Days -->
+            <section class="bg-white rounded-2xl p-6 card-shadow border border-slate-100 flex flex-col h-full min-h-[500px]">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-lg font-bold flex items-center gap-2 text-slate-800">
+                        <i class="ph-duotone ph-calendar-heart text-rose-500"></i>
+                        特別日子
+                    </h2>
+                    <button onclick="toggleEventModal()" class="flex items-center gap-1 bg-rose-50 text-rose-600 px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-rose-100 transition-colors">
+                        <i class="ph-bold ph-plus"></i> 新增
+                    </button>
+                </div>
+
+                <div id="events-container" class="space-y-3 flex-1 overflow-y-auto pr-1">
+                    <!-- Events will be injected here -->
+                    <div class="text-center text-slate-400 py-10">
+                        <i class="ph-duotone ph-ghost text-4xl mb-2"></i>
+                        <p>還沒有新增任何日子</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <!-- Settings Modal (Work Time) -->
+    <div id="settings-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm m-4 transform scale-95 transition-transform duration-300">
+            <h3 class="text-xl font-bold mb-4 text-slate-800">設定工作時間</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-600 mb-1">上班時間</label>
+                    <input type="time" id="input-start-time" class="w-full border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-600 mb-1">下班時間</label>
+                    <input type="time" id="input-end-time" class="w-full border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-500 outline-none">
+                </div>
+            </div>
+
+            <div class="mt-6 flex gap-3">
+                <button onclick="toggleSettingsModal()" class="flex-1 py-2.5 bg-slate-100 text-slate-600 rounded-xl font-medium hover:bg-slate-200 transition-colors">取消</button>
+                <button onclick="saveSettings()" class="flex-1 py-2.5 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-200">儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Event Modal -->
+    <div id="event-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center z-50 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm m-4 transform scale-95 transition-transform duration-300">
+            <h3 class="text-xl font-bold mb-4 text-slate-800">新增特別日子</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-600 mb-1">標題 (例如: 發薪日)</label>
+                    <input type="text" id="input-event-title" placeholder="輸入標題..." class="w-full border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-rose-200 focus:border-rose-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-600 mb-1">日期</label>
+                    <input type="date" id="input-event-date" class="w-full border border-slate-300 rounded-lg p-2.5 focus:ring-2 focus:ring-rose-200 focus:border-rose-500 outline-none">
+                </div>
+            </div>
+
+            <div class="mt-6 flex gap-3">
+                <button onclick="toggleEventModal()" class="flex-1 py-2.5 bg-slate-100 text-slate-600 rounded-xl font-medium hover:bg-slate-200 transition-colors">取消</button>
+                <button onclick="addEvent()" class="flex-1 py-2.5 bg-rose-500 text-white rounded-xl font-medium hover:bg-rose-600 transition-colors shadow-lg shadow-rose-200">新增</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- State Management ---
+        const DEFAULT_SETTINGS = {
+            workStart: "09:00",
+            workEnd: "18:00",
+            events: [],
+            memo: ""
+        };
+
+        let appData = JSON.parse(localStorage.getItem('dailyDashboardData')) || DEFAULT_SETTINGS;
+
+        // --- DOM Elements ---
+        const els = {
+            currentTime: document.getElementById('digital-clock'),
+            currentDate: document.getElementById('current-date-display'),
+            workRange: document.getElementById('work-time-range'),
+            workProgress: document.getElementById('work-progress-bar'),
+            workPercent: document.getElementById('work-percent-text'),
+            workStatus: document.getElementById('work-status-text'),
+            countdown: document.getElementById('countdown-display'),
+            eventsContainer: document.getElementById('events-container'),
+            memo: document.getElementById('daily-memo'),
+            modals: {
+                settings: document.getElementById('settings-modal'),
+                event: document.getElementById('event-modal')
+            },
+            inputs: {
+                start: document.getElementById('input-start-time'),
+                end: document.getElementById('input-end-time'),
+                evtTitle: document.getElementById('input-event-title'),
+                evtDate: document.getElementById('input-event-date')
+            }
+        };
+
+        // --- Initialization ---
+        function init() {
+            // Load Memo
+            els.memo.value = appData.memo || "";
+            els.memo.addEventListener('input', (e) => {
+                appData.memo = e.target.value;
+                saveData();
+            });
+
+            // Load Settings Inputs
+            els.inputs.start.value = appData.workStart;
+            els.inputs.end.value = appData.workEnd;
+            els.workRange.textContent = `${appData.workStart} - ${appData.workEnd}`;
+
+            // Render Events
+            renderEvents();
+
+            // Start Timer Loop
+            setInterval(updateTimeLoop, 1000);
+            updateTimeLoop(); // Run immediately
+        }
+
+        // --- Core Logic: Time Loop ---
+        function updateTimeLoop() {
+            const now = new Date();
+            
+            // Update Header Clock
+            els.currentTime.textContent = now.toLocaleTimeString('zh-Hant', { hour12: false });
+            els.currentDate.textContent = now.toLocaleDateString('zh-Hant', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+
+            // Calculate Work Progress
+            updateWorkProgress(now);
+        }
+
+        function updateWorkProgress(now) {
+            const [startH, startM] = appData.workStart.split(':').map(Number);
+            const [endH, endM] = appData.workEnd.split(':').map(Number);
+
+            const startTime = new Date(now);
+            startTime.setHours(startH, startM, 0, 0);
+
+            const endTime = new Date(now);
+            endTime.setHours(endH, endM, 0, 0);
+
+            let status = "";
+            let percent = 0;
+            let countdownText = "";
+            let barColor = "bg-gradient-to-r from-indigo-500 to-purple-500";
+
+            if (now < startTime) {
+                status = "尚未開始";
+                percent = 0;
+                const diff = startTime - now;
+                countdownText = formatDuration(diff);
+                els.workStatus.className = "text-sm font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded";
+            } else if (now >= endTime) {
+                status = "下班啦！";
+                percent = 100;
+                countdownText = "00:00:00";
+                barColor = "bg-gradient-to-r from-green-400 to-emerald-500";
+                els.workStatus.className = "text-sm font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded";
+            } else {
+                status = "工作中";
+                const totalDuration = endTime - startTime;
+                const elapsed = now - startTime;
+                percent = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
+                
+                const remaining = endTime - now;
+                countdownText = formatDuration(remaining);
+                els.workStatus.className = "text-sm font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded";
+            }
+
+            // Update DOM
+            els.workStatus.textContent = status;
+            els.workPercent.textContent = Math.floor(percent) + "%";
+            els.workProgress.style.width = percent + "%";
+            els.workProgress.className = `h-full transition-all duration-1000 ease-out ${barColor}`;
+            els.countdown.textContent = countdownText;
+        }
+
+        function formatDuration(ms) {
+            const seconds = Math.floor((ms / 1000) % 60);
+            const minutes = Math.floor((ms / (1000 * 60)) % 60);
+            const hours = Math.floor((ms / (1000 * 60 * 60)));
+            return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        }
+
+        function pad(num) {
+            return num.toString().padStart(2, '0');
+        }
+
+        // --- Event Logic ---
+        function renderEvents() {
+            els.eventsContainer.innerHTML = '';
+            
+            // Sort events by date
+            appData.events.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            if (appData.events.length === 0) {
+                els.eventsContainer.innerHTML = `
+                    <div class="text-center text-slate-400 py-10">
+                        <i class="ph-duotone ph-calendar-plus text-4xl mb-2 opacity-50"></i>
+                        <p class="text-sm">點擊右上角新增特別日子</p>
+                    </div>`;
+                return;
+            }
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            appData.events.forEach((evt, index) => {
+                const evtDate = new Date(evt.date);
+                evtDate.setHours(0, 0, 0, 0);
+
+                const diffTime = evtDate - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                let badgeClass = "bg-slate-100 text-slate-600";
+                let daysText = `${diffDays} 天`;
+                let icon = "ph-calendar-blank";
+
+                if (diffDays < 0) {
+                    daysText = "已過期";
+                    badgeClass = "bg-slate-100 text-slate-400";
+                } else if (diffDays === 0) {
+                    daysText = "就在今天！";
+                    badgeClass = "bg-rose-100 text-rose-600 font-bold";
+                    icon = "ph-party-popper";
+                } else if (diffDays <= 7) {
+                    badgeClass = "bg-amber-100 text-amber-700 font-bold";
+                    icon = "ph-fire";
+                }
+
+                const div = document.createElement('div');
+                div.className = "group flex justify-between items-center bg-slate-50 hover:bg-white border border-transparent hover:border-slate-200 p-4 rounded-xl transition-all shadow-sm";
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="bg-white p-2 rounded-lg text-rose-500 shadow-sm">
+                            <i class="ph-duotone ${icon} text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-slate-800">${evt.title}</h4>
+                            <p class="text-xs text-slate-500">${evt.date}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="px-3 py-1 rounded-full text-xs ${badgeClass}">${daysText}</span>
+                        <button onclick="deleteEvent(${index})" class="opacity-0 group-hover:opacity-100 text-slate-300 hover:text-red-500 transition-all p-1">
+                            <i class="ph-bold ph-trash"></i>
+                        </button>
+                    </div>
+                `;
+                els.eventsContainer.appendChild(div);
+            });
+        }
+
+        function addEvent() {
+            const title = els.inputs.evtTitle.value.trim();
+            const date = els.inputs.evtDate.value;
+
+            if (!title || !date) {
+                alert("請填寫標題和日期");
+                return;
+            }
+
+            appData.events.push({ title, date });
+            saveData();
+            renderEvents();
+            
+            // Reset and close
+            els.inputs.evtTitle.value = "";
+            els.inputs.evtDate.value = "";
+            toggleEventModal();
+        }
+
+        function deleteEvent(index) {
+            if(confirm("確定要刪除這個日子嗎？")) {
+                appData.events.splice(index, 1);
+                saveData();
+                renderEvents();
+            }
+        }
+
+        // --- Settings Logic ---
+        function saveSettings() {
+            const start = els.inputs.start.value;
+            const end = els.inputs.end.value;
+
+            if (!start || !end) {
+                alert("請填寫完整的時間");
+                return;
+            }
+
+            appData.workStart = start;
+            appData.workEnd = end;
+            saveData();
+            
+            els.workRange.textContent = `${start} - ${end}`;
+            toggleSettingsModal();
+            updateTimeLoop(); // Update immediately
+        }
+
+        function saveData() {
+            localStorage.setItem('dailyDashboardData', JSON.stringify(appData));
+        }
+
+        // --- UI Utilities ---
+        function toggleModal(modal) {
+            if (modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    modal.querySelector('div').classList.remove('scale-95');
+                    modal.querySelector('div').classList.add('scale-100');
+                }, 10);
+            } else {
+                modal.classList.add('opacity-0');
+                modal.querySelector('div').classList.add('scale-95');
+                modal.querySelector('div').classList.remove('scale-100');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }, 300);
+            }
+        }
+
+        function toggleSettingsModal() {
+            toggleModal(els.modals.settings);
+        }
+
+        function toggleEventModal() {
+            toggleModal(els.modals.event);
+        }
+
+        // Start
+        init();
+
+    </script>
+</body>
+</html>
